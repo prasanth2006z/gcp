@@ -1,0 +1,7 @@
+steps:
+- name: 'gcr.io/cloud-builders/mvn'
+  entrypoint: mvn
+  args: ['clean','package']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/cicd/spring-boot', '--build-arg=JAR_FILE=target/spring-boot-example-0.1.0.jar','.']
+images: ['gcr.io/$PROJECT_ID/cicd/spring-boot']
