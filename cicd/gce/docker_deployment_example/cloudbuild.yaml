@@ -4,4 +4,10 @@ steps:
   args: ['clean','package']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/cicd/spring-boot:1.0', '--build-arg=JAR_FILE=target/spring-boot-example-0.1.0.jar','.']
+- name: gcr.io/cloud-builders/gcloud
+  args: [ compute, instance-groups, managed, rolling-action, restart,  'instance-group-2', --zone=us-central1-a]
 images: ['gcr.io/$PROJECT_ID/cicd/spring-boot']
+artifacts:
+  objects:
+    location: 'gs://cloudbuild-jars/'
+    paths: ['target/spring-boot-example-0.1.0.jar']
