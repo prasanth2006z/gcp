@@ -1,0 +1,85 @@
+package hello;
+
+import org.apache.commons.lang3.StringUtils;
+import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import javax.servlet.http.HttpServletRequest;
+/** GreetingController example. */
+@RestController
+public class GreetingController {
+
+  private static final String TEMPLATE = "Hello, %s! You are visitor number %s";
+  private final AtomicLong counter = new AtomicLong();
+  private static final Logger logger = LoggerFactory.getLogger(GreetingController.class);
+  private final Gson gson = new Gson();
+  private final JsonParser jsonParser = new JsonParser();  
+
+  @RequestMapping("/")
+  public String greeting(@RequestParam(value = "name", defaultValue = "World!!!") String name) throws Exception{
+    logger.info("Logging INFO with Logback");
+    logger.error("Logging ERROR with Logback");
+   // PublisherExample pe = new PublisherExample();
+    //pe.publishMsg("Hi Prasanth!!!");
+    //SubscriberExample se =new SubscriberExample();
+    //se.receiveMsg("test-sub-one");
+    return String.format(TEMPLATE, name, counter.incrementAndGet());
+  }
+
+
+@RequestMapping(value = "/push", method = RequestMethod.POST)
+  public ResponseEntity receiveMessage(@RequestBody Body body) {
+    // Get PubSub message from request body.
+    Body.Message message = body.getMessage();
+    if (message == null) {
+      String msg = "Bad Request: invalid Pub/Sub message format";
+      System.out.println(msg);
+      return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+    }
+
+    String data = message.getData();
+    String target =
+        !StringUtils.isEmpty(data) ? new String(Base64.getDecoder().decode(data)) : "World";
+    String msg = "Hello " + target + "!";
+
+    System.out.println(msg);
+    return new ResponseEntity(msg, HttpStatus.OK);
+  }
+
+
+
+  @RequestMapping(value="/push123", method=RequestMethod.POST)
+  @ResponseBody
+  public ResponseEntity greeting123(HttpServletRequest request) throws Exception{
+    String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));
+   logger.info("body:",request);
+    JsonElement jsonRoot = jsonParser.parse(requestBody);
+    String messageStr = jsonRoot.getAsJsonObject().get("message").toString();
+    Message message = gson.fromJson(messageStr, Message.class);
+    String decoded = decode(message.getData());
+    message.setData(decoded);
+    logger.info("Msg1:",decoded);
+    logger.info("Msg:",message.getData());
+    return new ResponseEntity(HttpStatus.OK);
+  }
+
+  private String decode(String data) {
+    return new String(Base64.getDecoder().decode(data));
+  }
+
+}
