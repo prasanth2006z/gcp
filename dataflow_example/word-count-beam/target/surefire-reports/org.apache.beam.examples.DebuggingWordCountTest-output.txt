@@ -1,0 +1,4 @@
+May 13, 2020 5:48:28 AM org.apache.beam.sdk.io.FileBasedSource getEstimatedSizeBytes
+INFO: Filepattern /var/folders/91/_zn72p0s0c575r_xj33x8qsh0000gn/T/junit17756387756760691187/junit9259153341312059514.tmp matched 1 files with total size 54
+May 13, 2020 5:48:28 AM org.apache.beam.sdk.io.FileBasedSource split
+INFO: Splitting filepattern /var/folders/91/_zn72p0s0c575r_xj33x8qsh0000gn/T/junit17756387756760691187/junit9259153341312059514.tmp into bundles of size 13 took 1 ms and produced 1 files and 4 bundles
