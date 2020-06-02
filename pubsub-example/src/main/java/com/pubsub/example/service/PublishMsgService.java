@@ -3,13 +3,17 @@ package com.pubsub.example.service;
 
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.pubsub.example.constants.Constants;
+import com.pubsub.example.util.GCPCredentials;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,7 @@ public class PublishMsgService {
         List<ApiFuture<String>> futures = new ArrayList<>();
 
         try {
+            //publisher = Publisher.newBuilder(topicName).setCredentialsProvider(FixedCredentialsProvider.create(GCPCredentials.getCredentials())).build();
             publisher = Publisher.newBuilder(topicName).build();
             ByteString data = ByteString.copyFromUtf8(message);
             PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();

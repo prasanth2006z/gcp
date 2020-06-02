@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.pubsub.example.model.Body;
 import com.pubsub.example.service.PublishMsgService;
+import com.pubsub.example.service.SubscribeMsgReceiveService;
 import com.pubsub.example.service.SubscribeMsgService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,9 +62,11 @@ public class PubSubController {
     }
 
     @RequestMapping("/pull")
-    public void greetingS() throws Exception {
+    public String greetingS() throws Exception {
         SubscribeMsgService se = new SubscribeMsgService();
-        se.receiveMsg();
+        SubscribeMsgReceiveService subscribeMsgReceiveService =new SubscribeMsgReceiveService();
+        se.receiveMsg(subscribeMsgReceiveService);
+        return subscribeMsgReceiveService.getSubscriberMsgData();
 
     }
 
